@@ -1,0 +1,401 @@
+[gd_scene load_steps=4 format=3 uid="uid://d0cvff650skop"]
+
+[ext_resource type="Script" path="res://Scripts/DSMSGUI_Data_FiletypeCollector.gd" id="2_w7hr1"]
+[ext_resource type="Script" path="res://Scripts/MainHandler.gd" id="2_wauau"]
+[ext_resource type="Script" path="res://Scripts/FolderBrowseButton.gd" id="3_67lpc"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="FolderFind" type="FileDialog" parent="."]
+initial_position = 2
+title = "Open a Directory"
+size = Vector2i(512, 600)
+ok_button_text = "Select Current Folder"
+file_mode = 2
+access = 2
+
+[node name="DSMSFind" type="FileDialog" parent="."]
+initial_position = 2
+title = "Open a File"
+size = Vector2i(512, 600)
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.exe", "*.EXE")
+
+[node name="MFEPresetFind" type="FileDialog" parent="."]
+initial_position = 2
+title = "Locate/Set MFE Preset .txt to Load/Save"
+size = Vector2i(512, 600)
+ok_button_text = "Confirm Location"
+access = 2
+filters = PackedStringArray("*.txt")
+
+[node name="DSMSGUI_MainHandler" type="Node" parent="." node_paths=PackedStringArray("MFC", "MFE_TextBox", "AddMFE", "MFE_Load", "MFE_Save", "MFE_Path_TextBox", "StartFresh", "ConvertCSV", "GamePath_ER", "ProgPath_DSMSP", "ProgPath_OutputModFolder", "StartMergeButton", "BatNameText", "OpenDataFolder", "OpenMergedModExportFolder", "MSGBND_Item", "MSGBND_Menu", "SaveButton2", "Status")]
+script = ExtResource("2_wauau")
+MFC = NodePath("../HBoxContainer/MFEs/ScrollContainer/ModFoldersContainer")
+MFE_TextBox = NodePath("../HBoxContainer/MFEs/AddMFEHbox/MFEAddTB")
+AddMFE = NodePath("../HBoxContainer/MFEs/AddMFEHbox/VBoxContainer/AddMFEButton")
+MFE_Load = NodePath("../HBoxContainer/MFEs/MFEPreset_Load")
+MFE_Save = NodePath("../HBoxContainer/MFEs/MFEPreset_Save")
+MFE_Path_TextBox = NodePath("../HBoxContainer/MFEs/HBoxContainer/MFEPresetPath")
+StartFresh = NodePath("../HBoxContainer/VBoxContainer/StartFreshCheck")
+ConvertCSV = NodePath("../HBoxContainer/VBoxContainer/AttemptToConvertCSVs")
+GamePath_ER = NodePath("../HBoxContainer/Paths/HBoxContainer/ERPathText")
+ProgPath_DSMSP = NodePath("../HBoxContainer/Paths/HBoxContainer2/DSMSPathText")
+ProgPath_OutputModFolder = NodePath("../HBoxContainer/VBoxContainer/RegBinPath/HBoxContainer/MergedModPathText")
+StartMergeButton = NodePath("../HBoxContainer/VBoxContainer/StartMerge")
+BatNameText = NodePath("../HBoxContainer/VBoxContainer/ExportBatName")
+OpenDataFolder = NodePath("../HBoxContainer/VBoxContainer/HBoxContainer2/OpenAMMDataFolder")
+OpenMergedModExportFolder = NodePath("../HBoxContainer/VBoxContainer/RegBinPath/OpenModOutputFolder")
+MSGBND_Item = NodePath("../HBoxContainer/VBoxContainer/RegBinPath/MergedModItemMSGPath")
+MSGBND_Menu = NodePath("../HBoxContainer/VBoxContainer/RegBinPath/MergedModItemMSGPath2")
+SaveButton2 = NodePath("../HBoxContainer/Paths/SaveButton2")
+Status = NodePath("../HBoxContainer/VBoxContainer/StatusIndicator")
+
+[node name="DSMS_Data_CSV" type="Node" parent="." node_paths=PackedStringArray("MH")]
+script = ExtResource("2_w7hr1")
+MH = NodePath("../DSMSGUI_MainHandler")
+
+[node name="DSMS_Data_Massedit" type="Node" parent="." node_paths=PackedStringArray("MH")]
+script = ExtResource("2_w7hr1")
+FileTypeToSearchFor = 2
+MH = NodePath("../DSMSGUI_MainHandler")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+offset_right = 1280.0
+offset_bottom = 720.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DSMSTitle" type="Label" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "DSMS Portable
+Auto Mod Merger"
+horizontal_alignment = 1
+
+[node name="DSMSCredits" type="Label" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "DSMSPortable by mountlover
+Auto Mod Merger by CornflakeRush"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="StatusIndicator" type="Label" parent="HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "-READY-"
+horizontal_alignment = 1
+autowrap_mode = 1
+clip_text = true
+
+[node name="HSeparator3" type="HSeparator" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ExportBatName" type="TextEdit" parent="HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+placeholder_text = "Exported .bat Name - e.g \"GrandMerchantandERR\""
+
+[node name="StartMerge" type="Button" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "START MERGE"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="OpenAMMDataFolder" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "OPEN AMM DATA FOLDER"
+
+[node name="StartFreshCheck" type="CheckBox" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 12
+text = "Start Fresh (Searches for 'regulation - Copy.bin' first and
+\"regulation.bin.prev\" second, then replaces regulation.bin
+with whichever is found first)"
+
+[node name="AttemptToConvertCSVs" type="CheckBox" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 12
+text = "Attempt to convert Yapped .csv exports to DSMS .csv
+(Yapped may not have included some fields DSMS
+needs - if you get a \"wrong number of entries\" error
+this is most likely why)"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="RegBinPath" type="VBoxContainer" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="MergedModOutputLabel" type="Label" parent="HBoxContainer/VBoxContainer/RegBinPath"]
+layout_mode = 2
+text = "Merged Mod Output Folder
+ (regulation.bin will be created or edited here)"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/RegBinPath"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MergedModPathText" type="TextEdit" parent="HBoxContainer/VBoxContainer/RegBinPath/HBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+placeholder_text = "C:/ModEngine2/dsmsamm_mod"
+
+[node name="FolderBrowseButton" type="Button" parent="HBoxContainer/VBoxContainer/RegBinPath/HBoxContainer" node_paths=PackedStringArray("dirbrowse", "target", "MainHandler")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "BROWSE"
+script = ExtResource("3_67lpc")
+dirbrowse = NodePath("../../../../../FolderFind")
+target = NodePath("../MergedModPathText")
+MainHandler = NodePath("../../../../../DSMSGUI_MainHandler")
+
+[node name="OpenModOutputFolder" type="Button" parent="HBoxContainer/VBoxContainer/RegBinPath"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "OPEN MERGED MOD EXPORT FOLDER"
+
+[node name="ItemMsgTitle" type="Label" parent="HBoxContainer/VBoxContainer/RegBinPath"]
+visible = false
+layout_mode = 2
+text = "item.msgbnd.dcx Path To Merge"
+horizontal_alignment = 1
+
+[node name="MergedModItemMSGPath" type="TextEdit" parent="HBoxContainer/VBoxContainer/RegBinPath"]
+visible = false
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+placeholder_text = "C:/ModEngine2/dsmsamm_mod/msg/engus/item.msgbnd.dcx"
+
+[node name="ItemMsgTitle2" type="Label" parent="HBoxContainer/VBoxContainer/RegBinPath"]
+visible = false
+layout_mode = 2
+text = "menu.msgbnd.dcx Path To Merge"
+horizontal_alignment = 1
+
+[node name="MergedModItemMSGPath2" type="TextEdit" parent="HBoxContainer/VBoxContainer/RegBinPath"]
+visible = false
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+placeholder_text = "C:/ModEngine2/dsmsamm_mod/msg/engus/menu.msgbnd.dcx"
+
+[node name="HSeparator4" type="HSeparator" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="MFEs" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ModFoldersLabel" type="Label" parent="HBoxContainer/MFEs"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "MOD FOLDERS TO LOAD"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AddMFEHbox" type="HBoxContainer" parent="HBoxContainer/MFEs"]
+layout_mode = 2
+
+[node name="MFEAddTB" type="TextEdit" parent="HBoxContainer/MFEs/AddMFEHbox"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+placeholder_text = "Full path of mod folder to add (no final / )"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/MFEs/AddMFEHbox"]
+layout_mode = 2
+
+[node name="FolderBrowseButton" type="Button" parent="HBoxContainer/MFEs/AddMFEHbox/VBoxContainer" node_paths=PackedStringArray("dirbrowse", "target", "MainHandler")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "BROWSE"
+script = ExtResource("3_67lpc")
+dirbrowse = NodePath("../../../../../FolderFind")
+target = NodePath("../../MFEAddTB")
+MainHandler = NodePath("../../../../../DSMSGUI_MainHandler")
+
+[node name="AddMFEButton" type="Button" parent="HBoxContainer/MFEs/AddMFEHbox/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "ADD TO
+LOAD ORDER"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/MFEs"]
+custom_minimum_size = Vector2(0, 320)
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="ModFoldersContainer" type="VBoxContainer" parent="HBoxContainer/MFEs/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/MFEs"]
+layout_mode = 2
+
+[node name="MFEPresetPath" type="TextEdit" parent="HBoxContainer/MFEs/HBoxContainer"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+placeholder_text = "Mod Folder Entry (MFE) Preset Save/Load Path (w/ filename)"
+wrap_mode = 1
+
+[node name="FolderBrowseButton2" type="Button" parent="HBoxContainer/MFEs/HBoxContainer" node_paths=PackedStringArray("dirbrowse", "target", "MainHandler")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "BROWSE"
+script = ExtResource("3_67lpc")
+dirbrowse = NodePath("../../../../MFEPresetFind")
+target = NodePath("../MFEPresetPath")
+dirsignal = "file_selected"
+MainHandler = NodePath("../../../../DSMSGUI_MainHandler")
+
+[node name="MFEPreset_Load" type="Button" parent="HBoxContainer/MFEs"]
+layout_mode = 2
+text = "LOAD MOD FOLDER ENTRIES FROM PATH"
+
+[node name="MFEPreset_Save" type="Button" parent="HBoxContainer/MFEs"]
+layout_mode = 2
+text = "SAVE MOD FOLDER ENTRIES TO PATH"
+
+[node name="VSeparator2" type="VSeparator" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="Paths" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="KeyPathsLabel" type="Label" parent="HBoxContainer/Paths"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "PATHS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FolderBrowseButton2" type="Button" parent="HBoxContainer/Paths" node_paths=PackedStringArray("dirbrowse", "target")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "BROWSE"
+script = ExtResource("3_67lpc")
+dirbrowse = NodePath("../../../FolderFind")
+target = NodePath("../../MFEs/AddMFEHbox/MFEAddTB")
+
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/Paths"]
+layout_mode = 2
+
+[node name="KeyPathsLabel2" type="Label" parent="HBoxContainer/Paths"]
+layout_mode = 2
+text = "GAME PATHS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/Paths"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ERPathLabel" type="Label" parent="HBoxContainer/Paths/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Elden
+Ring"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ERPathText" type="TextEdit" parent="HBoxContainer/Paths/HBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+placeholder_text = "C:/SteamLibrary/steamapps/common/ELDEN RING/Game"
+
+[node name="FolderBrowseButton2" type="Button" parent="HBoxContainer/Paths/HBoxContainer" node_paths=PackedStringArray("dirbrowse", "target", "MainHandler")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "BROWSE"
+script = ExtResource("3_67lpc")
+dirbrowse = NodePath("../../../../FolderFind")
+target = NodePath("../ERPathText")
+MainHandler = NodePath("../../../../DSMSGUI_MainHandler")
+
+[node name="HSeparator2" type="HSeparator" parent="HBoxContainer/Paths"]
+layout_mode = 2
+
+[node name="KeyPathsLabel3" type="Label" parent="HBoxContainer/Paths"]
+layout_mode = 2
+text = "DSMSPORTABLE PATH"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/Paths"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="DSMSPathLabel" type="Label" parent="HBoxContainer/Paths/HBoxContainer2"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "DSMSPortable
+Path"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DSMSPathText" type="TextEdit" parent="HBoxContainer/Paths/HBoxContainer2"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+placeholder_text = "C:/DSMSPortable/DSMSPortable.exe"
+
+[node name="FolderBrowseButton" type="Button" parent="HBoxContainer/Paths/HBoxContainer2" node_paths=PackedStringArray("dirbrowse", "target", "MainHandler")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "BROWSE"
+script = ExtResource("3_67lpc")
+dirbrowse = NodePath("../../../../DSMSFind")
+target = NodePath("../DSMSPathText")
+dirsignal = "file_selected"
+MainHandler = NodePath("../../../../DSMSGUI_MainHandler")
+
+[node name="SaveButton2" type="Button" parent="HBoxContainer/Paths"]
+layout_mode = 2
+text = "SAVE ALL PATHS"
