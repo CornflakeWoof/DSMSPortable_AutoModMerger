@@ -148,9 +148,9 @@ func create_copy_command_if_regbin_backup_present(basepath:String)->String:
 	#FILE TO USE - PREFER reg-copy AS .PREV HAS A DANGER OF BEING "TAINTED" BY AN ALREADY MERGED MOD
 	var filetouse : String = ""
 	#FIRST CHECK FOR "regulation - (Copy).bin", INDICATING A BACKUP THE PLAYER'S MADE
-	if FileAccess.file_exists(basepath+"/regulation - (Copy).bin"):
+	if FileAccess.file_exists(basepath+"/regulation - Copy.bin"):
 		foundone = true
-		filetouse = "/regulation - (Copy).bin"
+		filetouse = "/regulation - Copy.bin"
 	elif FileAccess.file_exists(basepath+"/regulation.bin.prev"):
 		foundone = true
 		filetouse = "/regulation.bin.prev"
