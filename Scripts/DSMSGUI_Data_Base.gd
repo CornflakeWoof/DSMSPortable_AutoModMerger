@@ -8,7 +8,7 @@ const SaveFile : String = "DSMSGUI_Config.ini"
 
 
 #DATA SEARCH CONSTS
-enum ft {csv,fmgjson,massedit,anibnd,fmgxml,fmg}
+enum ft {csv,fmg,massedit,anibnd}
 enum fmg{item,menu}
 const ValidTextTypes : Array = ["&&item&&","&&menu&&"]
 const ValidSearchTypes : Array = [".csv",".fmg",".massedit",".anibnd.dcx"]
