@@ -128,7 +128,7 @@ func process_dsms_job_queue():
 	var batch : String = ""
 	#FIRST ADD COPY COMMAND IF WE'RE GOING TO RESET REGBIN
 	if StartFresh.button_pressed:
-		batch += create_copy_command_if_regbin_backup_present(get_mod_output_folder())
+		batch += create_copy_command_if_regbin_backup_present(format_frontslash_to_double_backslash(get_mod_output_folder()))
 	update_save_dictionary()
 	#FOR EACH DISCOVERED FILETYPE REGISTERED IN MHDSMSQUEUE...
 	for x in MHDSMSQueue.keys().size():

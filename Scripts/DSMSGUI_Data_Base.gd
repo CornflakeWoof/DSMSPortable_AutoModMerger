@@ -147,13 +147,14 @@ func create_copy_command_if_regbin_backup_present(basepath:String)->String:
 	var foundone : bool = false
 	#FILE TO USE - PREFER reg-copy AS .PREV HAS A DANGER OF BEING "TAINTED" BY AN ALREADY MERGED MOD
 	var filetouse : String = ""
+	#HERE IT SEEMS WE HAVE TO BE ABSOLUTELY SURE TO USE FORWARD SLASHES FOR THE DIRECTORY
 	#FIRST CHECK FOR "regulation - (Copy).bin", INDICATING A BACKUP THE PLAYER'S MADE
-	if FileAccess.file_exists(basepath+"/regulation - Copy.bin"):
+	if FileAccess.file_exists(basepath+"\\regulation - Copy.bin"):
 		foundone = true
-		filetouse = "/regulation - Copy.bin"
-	elif FileAccess.file_exists(basepath+"/regulation.bin.prev"):
+		filetouse = "\\regulation - Copy.bin"
+	elif FileAccess.file_exists(basepath+"\\regulation.bin.prev"):
 		foundone = true
-		filetouse = "/regulation.bin.prev"
+		filetouse = "\\regulation.bin.prev"
 	
 	#IF WE FOUND ONE, APPLY THE VALUES TO FINALSTRING
 	if foundone:
@@ -203,7 +204,7 @@ func array_to_string(convarray:Array)->String:
 			strtoreturn += " "
 	return strtoreturn
 
-func format_double_backslash_to_frontslash(stringtoedit:String)->String:
+func format_frontslash_to_double_backslash(stringtoedit:String)->String:
 	return stringtoedit.replace("/","\\")
 
 func add_quotes_around_array(arraytoquote:Array=[])->Array:

@@ -41,7 +41,6 @@ func register_files_with_mh():
 		if !MH.MHDSMSQueue[entry].has(ModFolderFileArrays.keys()[x]):
 			MH.MHDSMSQueue[entry][ModFolderFileArrays.keys()[x]] = []
 		MH.MHDSMSQueue[entry][ModFolderFileArrays.keys()[x]].append_array(ModFolderFileArrays[ModFolderFileArrays.keys()[x]])
-	DisplayServer.clipboard_set(str(MH.MHDSMSQueue))
 #GET_FILETYPETOSEARCHFOR_REALNAME_FROM_MAINHANDLER
 func get_filetype_name_from_mh()->String:
 	return MH.ValidSearchTypes[FileTypeToSearchFor]
