@@ -157,7 +157,7 @@ func create_copy_command_if_regbin_backup_present(basepath:String)->String:
 	
 	#IF WE FOUND ONE, APPLY THE VALUES TO FINALSTRING
 	if foundone:
-		finalstring = copycommandstart+basepath+filetouse+" "+basepath+"/regulation.bin\n"
+		finalstring = copycommandstart+add_quotes_around_string(basepath+filetouse)+" "+add_quotes_around_string(basepath+"/regulation.bin")+"\n"
 		print_debug(finalstring)
 		
 	return finalstring
