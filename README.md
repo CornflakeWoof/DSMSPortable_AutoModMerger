@@ -13,7 +13,7 @@
 1) Download DSMSPortable and extract it to a convenient folder.
 2) Download AMM and extract it to a convenient folder.
 3) Open AMM and set the program's required paths using the "Browse" function beside each textbox.
-4) In the center of the window is the "Mod Folder Entries" (MFE) load order. Click "Browse", then navigate to and select the folder containing the source files of the first mod you'd like merged.
+4) In the center of the window is the "Mod Folder Entries" (MFE) load order. Click "Browse", then navigate to and select the folder containing the source .csv/.massedit/etc. files of the first mod you'd like merged.
 5) With the desired path visible in the MFE path text box, click "Add To Load Order". This will create a MFE load order entry that can be moved up and down, removed and temporarily disabled.
 6) Repeat steps 4 and 5 for any subsequent mod folders you'd like added - note that the last mod in the load order will be merged last, so any major patches to existing CSVs should be as low down as possible!
 7) If you'd like the resulting .bat to automatically replace the merged mod's regulation.bin with either a backup named "regulation - Copy.bin" or the "regulation.bin.prev" file that might have been produced previously (AMM will check for these in that order), check "Start Fresh".
