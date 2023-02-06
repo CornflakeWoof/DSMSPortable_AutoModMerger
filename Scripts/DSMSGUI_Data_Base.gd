@@ -8,10 +8,10 @@ const SaveFile : String = "DSMSGUI_Config.ini"
 
 
 #DATA SEARCH CONSTS
-enum ft {csv,fmg,massedit,anibnd}
+enum ft {csv,fmg,massedit,tae}
 enum fmg{item,menu}
 const ValidTextTypes : Array = ["&&item&&","&&menu&&"]
-const ValidSearchTypes : Array = [".csv",".fmg",".massedit",".anibnd.dcx"]
+const ValidSearchTypes : Array = [".csv",".fmg",".massedit",".tae"]
 const ValidModFolders : Dictionary = {
 	"ER":["action","asset","chr","event","expression","facegen","font","map","material","menu","msg","mtd","parts"]
 }
@@ -81,6 +81,17 @@ func remove_filetypes_from_array(array:Array=[],filetypes:Array=[".fmg.json",".f
 	return array
 
 #INFORMATION FUNCTIONS
+
+func get_short_name_from_end(stringtoedit:String,maxlength:int=16)->String:
+	var stringtoreturn : String = ""
+	var stringlength : int = maxlength if stringtoedit.length() > maxlength else stringtoedit.length()
+	for x in stringlength:
+		stringtoreturn += stringtoedit[(stringtoedit.length()-stringlength)+x]
+	#REMOVE ANY SLASHES
+	stringtoreturn = stringtoreturn.replace("/","")
+	stringtoreturn = stringtoreturn.replace("\\","")
+	stringtoreturn = stringtoreturn.replace(":","")
+	return stringtoreturn
 
 func update_valid_text_names_from_gametype():
 	var gt = get_gametype()

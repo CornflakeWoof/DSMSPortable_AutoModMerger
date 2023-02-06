@@ -8,7 +8,7 @@ class_name DSMS_Data_FiletypeCollector
 #FILES NEED TO BE GROUPED ON A PER MOD FOLDER BASIS SO WE CAN DO THE SAME FOR MAINHANDLER AND CALL DSMS BASED
 #ON WHAT EACH MOD REQUIRES
 
-@export_enum(".csv",".fmg",".massedit",".anibnd.dcx") var FileTypeToSearchFor : int
+@export_enum(".csv",".fmg",".massedit",".tae") var FileTypeToSearchFor : int
 @export var MH : DSMSGUI_MainHandler
 @export_enum("item","menu") var FMGParamType : int
 

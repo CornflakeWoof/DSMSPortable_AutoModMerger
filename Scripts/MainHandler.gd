@@ -141,22 +141,37 @@ func process_dsms_job_queue():
 			if MHDSMSQueue[curft].has(newkey):
 				#MAKE SURE CURFT->MODFOLDER ACTUALLY HAS CONTENT BEFORE WE CONTINUE
 				if MHDSMSQueue[curft][newkey].size() > 0:
-					#CREATE A NEW BATCH FILE ADDITION AND ADD THE DSMS PATH
-					var newbatch: String = ""
-					newbatch += add_quotes_around_string(get_dsms_path())+" "
-					print_debug(curft+" has "+newkey+", processing...")
-					update_status_indicator("-PROCESSING '"+newkey+"'-")
-					#GET THE RELEVANT DSMS OPERATION AND ADD IT TO THE NEWBATCH LINE
-					newbatch += get_next_dsms_operation_from_filetype(curft)+" "
-					#FINALLY, ADD THE ARRAY AND A NEWLINE, THEN ADD THIS TO THE OVERALL BATCH FILE
-					newbatch += array_to_string(MHDSMSQueue[curft][newkey])
-					batch += newbatch+"\n"
+					#CATCH IF WE'RE MAKING A .TAE AS THIS MUST BE HANDLED DIFFERENTLY
+					if curft == ".tae":
+						#LET USER KNOW TO ADJUST THE .BAT FILE FOR WHERE THESE NEED TO GO
+						OS.alert("Created .bat variables for "+newkey+"'s TAE entries!\nBy default they will be merged into c0000.anibnd.dcx, the player character's animations, if they need to go somewhere else please make sure to edit the .bat and update this mod's variable ("+get_short_name_from_end(newkey)+"anibnd) to the correct 'cxxxx' value!")
+						#CREATE A TAE DICTIONARY FOR THIS MODFOLDER
+						var taedict : Dictionary = create_dsms_tae_entries(newkey)
+						#FIRST ADD THE BAT VARIABLE TO HOST THE ANIBND THIS MODFOLDER'S TAES ARE TO BE MERGED INTO
+						var taebatch : String = ""
+						taebatch += "\n"+taedict["batvar"]+"\n\n"
+						#NOW ADD THE DSMS CALL
+						taebatch += add_quotes_around_string(get_dsms_path())+" --animerge "+add_quotes_around_string(taedict["anibndpath"])+" "
+						#NOW ADD THE TAES TO MERGE
+						taebatch += array_to_string(MHDSMSQueue[curft][newkey])
+						batch += taebatch+"\n"
+					else:
+						#CREATE A NEW BATCH FILE ADDITION AND ADD THE DSMS PATH
+						var newbatch: String = ""
+						newbatch += add_quotes_around_string(get_dsms_path())+" "
+						print_debug(curft+" has "+newkey+", processing...")
+						update_status_indicator("-PROCESSING '"+newkey+"'-")
+						#GET THE RELEVANT DSMS OPERATION AND ADD IT TO THE NEWBATCH LINE
+						newbatch += get_next_dsms_operation_from_filetype(curft,newkey)+" "
+						#FINALLY, ADD THE ARRAY AND A NEWLINE, THEN ADD THIS TO THE OVERALL BATCH FILE
+						newbatch += array_to_string(MHDSMSQueue[curft][newkey])
+						batch += newbatch+"\n"
 				
 	#ONCE WE'VE ITERATED OVER ALL FILETYPES AND MFE ARRAY ENTRIES, WRITE THE FINAL BATCH FILE AND RUN IT THROUGH CMD
 	create_bat_at_path(get_data_folder_path()+"/DSMSMerge"+get_bat_name()+".bat",batch)
 	run_dsms()
 
-func get_next_dsms_operation_from_filetype(filetype:String=".csv",menufmgiftrue:bool=false)->String:#->PackedStringArray:
+func get_next_dsms_operation_from_filetype(filetype:String=".csv",modfolder:String="")->String:#->PackedStringArray:
 	var arguments : String
 	#STORE DSMS FLAG TO ADD
 	var DSMSCommand : String = "-C"
@@ -175,20 +190,12 @@ func get_next_dsms_operation_from_filetype(filetype:String=".csv",menufmgiftrue:
 			DSMSCommand = "--fmg-merge"
 			DSMSNeedsItemMenuFMG = true
 	
-	#WE'RE GOING TO BE RUNNING THIS THROUGH CMD, SO FIRST ADD DSMS AS A BASE APPLICATION
-	
-	#arguments.append(get_dsms_path())
-	
 	#ADD DSMS REGBIN AND GAMEPATH IF NEEDED
 	if DSMSNeedsRegBinandGamePath:
 		arguments += (create_dsms_regbin_and_gametype_arguments())
-
-	#ADD OUTPUT IF NEEDED
 		
 	#NEXT, ADD THE DSMS COMMAND DETERMINED BY FILETYPE
 	arguments += " "+DSMSCommand
-	
-	#HANDLE ITEM/MENU .FMG IF REQUIRED
 	
 	print_debug(filetype+" "+str(arguments))
 	
@@ -234,6 +241,22 @@ func create_dsms_msgbnd_commands(modfolder:String)->String:
 					#IF ITEMADDITION IS EMPTY AND MENUADDITION ISN'T
 					finalmsgbnd = menuaddition
 	return finalmsgbnd
+
+func create_dsms_tae_entries(modfolder:String)->Dictionary:
+	#TAEs ARE ASSIGNED TO THE CORRECT axxx.anibnd.dcx VIA BAT VARIABLES, SO WE CREATE THOSE AND PREPARE
+	#AN APPROPRIATE DSMS CALL
+	var finalbatch : Dictionary={
+		"batvar":"",
+		"anibndpath":""
+	}
+	
+	#CREATE A VARIABLE TO HOUSE THE BAT VARIABLE FOR WHERE THESE TAES ARE GOING
+	var newbatvar : String = get_short_name_from_end(modfolder)+"anibnd"
+	finalbatch["batvar"]="set "+newbatvar+"=c0000"
+	#SET THE ANIBND PATH
+	finalbatch["anibndpath"]=get_mod_output_folder()+"/chr/%"+newbatvar+"%.anibnd.dcx"
+	
+	return finalbatch
 	
 func sort_fmg_entries(modfolder:String)->Array:
 	var itemmsg : Array = []

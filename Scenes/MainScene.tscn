@@ -68,6 +68,11 @@ script = ExtResource("2_w7hr1")
 FileTypeToSearchFor = 2
 MH = NodePath("../DSMSGUI_MainHandler")
 
+[node name="DSMS_Data_Tae" type="Node" parent="." node_paths=PackedStringArray("MH")]
+script = ExtResource("2_w7hr1")
+FileTypeToSearchFor = 3
+MH = NodePath("../DSMSGUI_MainHandler")
+
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
 offset_right = 1280.0
