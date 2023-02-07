@@ -6,6 +6,8 @@
 ## Current supported filetypes
 * .csv - See "CSV Notes" section for some important information!
 * .massedit
+* .tae
+* (Tentatively) .fmg/.fmg.json/.fmg.xml
 # Requirements
 * mountlover's DSMSPortable - https://github.com/mountlover/DSMSPortable
 * The .csv/.massedit/(eventually) .fmg(.json/.xml) source files for the mods you'd like to merge
