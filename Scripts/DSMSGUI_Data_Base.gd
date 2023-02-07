@@ -36,19 +36,20 @@ func get_all_files_with_filetype(directory:String,filetype:String=".csv",checksu
 	if checksubfolders:
 		var subfolders : Array = DirAccess.get_directories_at(directory)
 		#ADD TO DIRECTORIES TO CHECK
-		directoriestocheck.append_array(subfolders)
+		directoriestocheck.append_array(add_path_to_string_array(subfolders,directory+"/"))
 		for x in subfolders.size():
 			#CHECK FOR SUB-SUBFOLDERS
-			var ssfolders : Array = DirAccess.get_directories_at(directory+"/"+subfolders[x])
+			var ssfolders : Array = DirAccess.get_directories_at(subfolders[x])
 			#ADD TO DIRECTORIES TO CHECK
-			directoriestocheck.append_array(ssfolders)
-	print_debug(directoriestocheck)
+			directoriestocheck.append_array(add_path_to_string_array(ssfolders,subfolders[x]+"/"))
+	#print_debug(directoriestocheck)
 	#NOW WE HAVE ALL THE DIRECTORIES WE WANT TO CHECK, ITERATE OVER ALL OF THEM AND ADD ANY FILES FOUND TO FINALARRAY
 	for x in directoriestocheck.size():
 		var newfiles = Array(DirAccess.get_files_at(directoriestocheck[x]))
 		#ADD DIRECTORIESTOCHECK PATHS TO EACH NEWFILES ENTRY
 		add_path_to_string_array(newfiles,directoriestocheck[x])
-		print_debug("FORMATTED: "+str(newfiles))
+		if newfiles.size() < 6:
+			print_debug("FORMATTED: "+str(newfiles))
 		finalarray.append_array(newfiles)
 	#NOW WE SHOULD HAVE ALL THE FILES WE NEED (ASSUMING THEY WEREN'T NESTED TOO DEEPLY), FILTER OUT THE ENTRIES THAT DON'T HAVE OUR DESIRED FILETYPE
 	#AND RETURN THE RESULTING ARRAY
@@ -174,6 +175,13 @@ func create_copy_command_if_regbin_backup_present(basepath:String)->String:
 		
 	return finalstring
 
+func create_bat_copy_command(pathfrom:String,pathto:String,delim:String="\n")->String:
+	var finalresult : String = ""
+	finalresult = "\ncopy /y "+add_quotes_around_string(format_frontslash_to_double_backslash(pathfrom))+" "+add_quotes_around_string(format_frontslash_to_double_backslash(pathto))+delim
+	print_debug(finalresult)
+	return finalresult
+	
+
 #FORMATTING FUNCTIONS
 
 func attempt_csv_yapped_to_dsms_conversion(csv:String):
@@ -193,9 +201,6 @@ func attempt_csv_yapped_to_dsms_conversion(csv:String):
 			#WRITE NEW VERSION BACK TO FILE
 			var cw = FileAccess.open(csv,FileAccess.WRITE)
 			cw.store_line(csvtext)
-			
-			
-		
 
 func add_quotes_around_string(stringtoreturn:String):
 	var finalstring = stringtoreturn

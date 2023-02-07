@@ -73,6 +73,11 @@ script = ExtResource("2_w7hr1")
 FileTypeToSearchFor = 3
 MH = NodePath("../DSMSGUI_MainHandler")
 
+[node name="DSMS_Data_Fmg" type="Node" parent="." node_paths=PackedStringArray("MH")]
+script = ExtResource("2_w7hr1")
+FileTypeToSearchFor = 1
+MH = NodePath("../DSMSGUI_MainHandler")
+
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
 offset_right = 1280.0
@@ -174,14 +179,13 @@ size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 12
 placeholder_text = "C:/ModEngine2/dsmsamm_mod"
 
-[node name="FolderBrowseButton" type="Button" parent="HBoxContainer/VBoxContainer/RegBinPath/HBoxContainer" node_paths=PackedStringArray("dirbrowse", "target", "MainHandler")]
+[node name="FolderBrowseButton" type="Button" parent="HBoxContainer/VBoxContainer/RegBinPath/HBoxContainer" node_paths=PackedStringArray("dirbrowse", "target")]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "BROWSE"
 script = ExtResource("3_67lpc")
 dirbrowse = NodePath("../../../../../FolderFind")
 target = NodePath("../MergedModPathText")
-MainHandler = NodePath("../../../../../DSMSGUI_MainHandler")
 
 [node name="OpenModOutputFolder" type="Button" parent="HBoxContainer/VBoxContainer/RegBinPath"]
 layout_mode = 2
@@ -247,14 +251,13 @@ placeholder_text = "Full path of mod folder to add (no final / )"
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/MFEs/AddMFEHbox"]
 layout_mode = 2
 
-[node name="FolderBrowseButton" type="Button" parent="HBoxContainer/MFEs/AddMFEHbox/VBoxContainer" node_paths=PackedStringArray("dirbrowse", "target", "MainHandler")]
+[node name="FolderBrowseButton" type="Button" parent="HBoxContainer/MFEs/AddMFEHbox/VBoxContainer" node_paths=PackedStringArray("dirbrowse", "target")]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "BROWSE"
 script = ExtResource("3_67lpc")
 dirbrowse = NodePath("../../../../../FolderFind")
 target = NodePath("../../MFEAddTB")
-MainHandler = NodePath("../../../../../DSMSGUI_MainHandler")
 
 [node name="AddMFEButton" type="Button" parent="HBoxContainer/MFEs/AddMFEHbox/VBoxContainer"]
 layout_mode = 2
@@ -283,7 +286,7 @@ theme_override_font_sizes/font_size = 12
 placeholder_text = "Mod Folder Entry (MFE) Preset Save/Load Path (w/ filename)"
 wrap_mode = 1
 
-[node name="FolderBrowseButton2" type="Button" parent="HBoxContainer/MFEs/HBoxContainer" node_paths=PackedStringArray("dirbrowse", "target", "MainHandler")]
+[node name="FolderBrowseButton2" type="Button" parent="HBoxContainer/MFEs/HBoxContainer" node_paths=PackedStringArray("dirbrowse", "target")]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "BROWSE"
@@ -291,7 +294,6 @@ script = ExtResource("3_67lpc")
 dirbrowse = NodePath("../../../../MFEPresetFind")
 target = NodePath("../MFEPresetPath")
 dirsignal = "file_selected"
-MainHandler = NodePath("../../../../DSMSGUI_MainHandler")
 
 [node name="MFEPreset_Load" type="Button" parent="HBoxContainer/MFEs"]
 layout_mode = 2
@@ -315,13 +317,11 @@ text = "PATHS"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="FolderBrowseButton2" type="Button" parent="HBoxContainer/Paths" node_paths=PackedStringArray("dirbrowse", "target")]
+[node name="FolderBrowseButton2" type="Button" parent="HBoxContainer/Paths"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "BROWSE"
 script = ExtResource("3_67lpc")
-dirbrowse = NodePath("../../../FolderFind")
-target = NodePath("../../MFEs/AddMFEHbox/MFEAddTB")
 
 [node name="HSeparator" type="HSeparator" parent="HBoxContainer/Paths"]
 layout_mode = 2
@@ -352,14 +352,13 @@ size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 12
 placeholder_text = "C:/SteamLibrary/steamapps/common/ELDEN RING/Game"
 
-[node name="FolderBrowseButton2" type="Button" parent="HBoxContainer/Paths/HBoxContainer" node_paths=PackedStringArray("dirbrowse", "target", "MainHandler")]
+[node name="FolderBrowseButton2" type="Button" parent="HBoxContainer/Paths/HBoxContainer" node_paths=PackedStringArray("dirbrowse", "target")]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "BROWSE"
 script = ExtResource("3_67lpc")
 dirbrowse = NodePath("../../../../FolderFind")
 target = NodePath("../ERPathText")
-MainHandler = NodePath("../../../../DSMSGUI_MainHandler")
 
 [node name="HSeparator2" type="HSeparator" parent="HBoxContainer/Paths"]
 layout_mode = 2
@@ -391,7 +390,7 @@ size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 12
 placeholder_text = "C:/DSMSPortable/DSMSPortable.exe"
 
-[node name="FolderBrowseButton" type="Button" parent="HBoxContainer/Paths/HBoxContainer2" node_paths=PackedStringArray("dirbrowse", "target", "MainHandler")]
+[node name="FolderBrowseButton" type="Button" parent="HBoxContainer/Paths/HBoxContainer2" node_paths=PackedStringArray("dirbrowse", "target")]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "BROWSE"
@@ -399,7 +398,6 @@ script = ExtResource("3_67lpc")
 dirbrowse = NodePath("../../../../DSMSFind")
 target = NodePath("../DSMSPathText")
 dirsignal = "file_selected"
-MainHandler = NodePath("../../../../DSMSGUI_MainHandler")
 
 [node name="SaveButton2" type="Button" parent="HBoxContainer/Paths"]
 layout_mode = 2

@@ -4,7 +4,6 @@ class_name FolderBrowseButton
 @export var dirbrowse : FileDialog
 @export var target : TextEdit
 @export var dirsignal : String = "dir_selected"
-@export var MainHandler : DSMSGUI_MainHandler
 
 func set_target_text(newtext:String):
 	target.text = newtext
@@ -27,6 +26,5 @@ func _on_pressed():
 	await (dirbrowse.visibility_changed)
 	dirbrowse.visible = false
 	connectbrowse(true)
-	MainHandler.save_mainhandler_data()
 	self.disabled = false
 	

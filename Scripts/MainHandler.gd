@@ -128,7 +128,7 @@ func process_dsms_job_queue():
 	var batch : String = ""
 	#FIRST ADD COPY COMMAND IF WE'RE GOING TO RESET REGBIN
 	if StartFresh.button_pressed:
-		batch += create_copy_command_if_regbin_backup_present(format_frontslash_to_double_backslash(get_mod_output_folder()))
+		batch += create_copy_command_if_regbin_backup_present(format_frontslash_to_double_backslash(get_mod_output_folder()))+"\n"
 	update_save_dictionary()
 	#FOR EACH DISCOVERED FILETYPE REGISTERED IN MHDSMSQUEUE...
 	for x in MHDSMSQueue.keys().size():
@@ -139,6 +139,8 @@ func process_dsms_job_queue():
 			#IF THE CURRENT FILETYPE KEY HAS AN ARRAY FOR THE CURRENT MODFOLDER
 			var newkey :String = MHSaveDictionary["mfe_array"][y]
 			if MHDSMSQueue[curft].has(newkey):
+				#print_debug(curft+" has "+newkey+", processing...")
+				update_status_indicator("-PROCESSING '"+newkey+"'-")
 				#MAKE SURE CURFT->MODFOLDER ACTUALLY HAS CONTENT BEFORE WE CONTINUE
 				if MHDSMSQueue[curft][newkey].size() > 0:
 					#CATCH IF WE'RE MAKING A .TAE AS THIS MUST BE HANDLED DIFFERENTLY
@@ -154,18 +156,29 @@ func process_dsms_job_queue():
 						taebatch += add_quotes_around_string(get_dsms_path())+" --animerge "+add_quotes_around_string(taedict["anibndpath"])+" "
 						#NOW ADD THE TAES TO MERGE
 						taebatch += array_to_string(MHDSMSQueue[curft][newkey])
-						batch += taebatch+"\n"
+						batch += taebatch+"\n\n"
+					#CATCH IF WE'RE MAKING A .FMG AS THIS MUST ALSO BE HANDLED DIFFERENTLY
+					elif curft == ".fmg":
+						#FIRST SET UP THE FMG ADDITION
+						var fmgbatch : String = ""
+						#THEN ADD THE FMG COPY COMMANDS FOR THIS MODFOLDER IF IT HAS ANY ITEM OR MENU FMGS
+						fmgbatch += create_msgbnd_copy_commands_if_needed(newkey)
+						#SET UP DSMS
+						fmgbatch += add_quotes_around_string(get_dsms_path())
+						#SET UP THE INITIAL DSMS OPERATIONS FOR FMGS
+						fmgbatch += get_next_dsms_operation_from_filetype(curft,newkey)+" "
+						#NOW ADD THE SUPPLEMENTARY FMG, INCLUDING A SEPARATE DSMS CALL FOR MENU MSGBND
+						fmgbatch += create_dsms_msgbnd_commands(newkey)
+						batch += fmgbatch+"\n\n"
 					else:
 						#CREATE A NEW BATCH FILE ADDITION AND ADD THE DSMS PATH
 						var newbatch: String = ""
 						newbatch += add_quotes_around_string(get_dsms_path())+" "
-						print_debug(curft+" has "+newkey+", processing...")
-						update_status_indicator("-PROCESSING '"+newkey+"'-")
 						#GET THE RELEVANT DSMS OPERATION AND ADD IT TO THE NEWBATCH LINE
 						newbatch += get_next_dsms_operation_from_filetype(curft,newkey)+" "
 						#FINALLY, ADD THE ARRAY AND A NEWLINE, THEN ADD THIS TO THE OVERALL BATCH FILE
 						newbatch += array_to_string(MHDSMSQueue[curft][newkey])
-						batch += newbatch+"\n"
+						batch += newbatch+"\n\n"
 				
 	#ONCE WE'VE ITERATED OVER ALL FILETYPES AND MFE ARRAY ENTRIES, WRITE THE FINAL BATCH FILE AND RUN IT THROUGH CMD
 	create_bat_at_path(get_data_folder_path()+"/DSMSMerge"+get_bat_name()+".bat",batch)
@@ -184,10 +197,10 @@ func get_next_dsms_operation_from_filetype(filetype:String=".csv",modfolder:Stri
 			DSMSCommand = "-C"
 			DSMSNeedsRegBinandGamePath = true
 		".massedit":
-			DSMSCommand = "-M"
+			DSMSCommand = "-M+"
 			DSMSNeedsRegBinandGamePath = true
 		".fmg":
-			DSMSCommand = "--fmg-merge"
+			DSMSCommand = "--fmgmerge"
 			DSMSNeedsItemMenuFMG = true
 	
 	#ADD DSMS REGBIN AND GAMEPATH IF NEEDED
@@ -200,9 +213,21 @@ func get_next_dsms_operation_from_filetype(filetype:String=".csv",modfolder:Stri
 	print_debug(filetype+" "+str(arguments))
 	
 	return arguments 
+
+func create_msgbnd_copy_commands_if_needed(modfolder:String):
+	var copycommands : String = ""
+	var msgbnds = get_output_mod_msgbnd_paths()
+	var msgentries = sort_fmg_entries(modfolder)
+	for x in 2:
+		if msgentries[x].size() > 0:
+			#ATTEMPT TO CHECK FOR x.msgbnd - Copy.dcx AND ADD COPY COMMAND IF SO
+			copycommands += create_bat_copy_command(msgbnds[x+2],msgbnds[x])
+	return copycommands
 	
 func create_dsms_msgbnd_commands(modfolder:String)->String:
-	#WE'RE ASSUMING THE --fmg-merge PARAMETER HAS ALREADY BEEN DECIDED 
+	#WE'RE ASSUMING THE --fmg-merge PARAMETER HAS ALREADY BEEN DECIDED
+	#ALSO CREATE COPY COMMANDS IF WE FIND AN EXISTING ITEM.MSGBND.DCX
+	var copycommands : String = ""
 	var finalmsgbnd : String = ""
 	var additionaldsmscall : String = ""
 	var dsmscall : String = get_dsms_path()+" --fmg-merge "
@@ -216,31 +241,35 @@ func create_dsms_msgbnd_commands(modfolder:String)->String:
 				var menuaddition : String = ""
 				#FIRST SORT OUR FMG ENTRIES
 				var msgentries : Array = sort_fmg_entries(modfolder)
-				#ITERATE OVER BOTH SETS OF DATA - ITEM FIRST, THEN DATA
-				for x in msgbnds.size():
-					var additiontoaddto : Array = [itemaddition,menuaddition]
+				#ITERATE OVER BOTH SETS OF DATA - ITEM FIRST, THEN DATA - WE ONLY DO THIS TWICE
+				#BECAUSE WE DON'T WANT TO ITERATE OVER THE ITEMCOPY AND MENUCOPY ARRAY INDEXES INTRODUCED BY GET_OUTPUT_MOD_MSGBND_PATHS
+				for x in 2:
 					#CHECK THAT PATH ARRAY ISN'T EMPTY
-					if msgbnds[x] != "":
-						#CHECK THAT THE RELEVANT ARRAY ISN'T EMPTY
-						if msgentries[x].size() > 0:
-							var newaddition : String = ""
-							#ADD RELEVANT FMG DCX PATH FROM MSGBNDS
-							newaddition += msgbnds[x]+" "
-							#NOW ADD THE SORTED FMG ENTRIES
-							for y in msgentries[x].size():
-								newaddition += add_quotes_around_string(msgentries[x])+" "
-							additiontoaddto[x] += newaddition
+					if msgentries[x].size() > 0:
+						var newaddition : String = ""
+						#ADD RELEVANT FMG DCX PATH FROM MSGBNDS
+						newaddition += add_quotes_around_string(msgbnds[x])+" "
+						#NOW ADD THE SORTED FMG ENTRIES
+						for y in msgentries[x].size():
+							newaddition += add_quotes_around_string(msgentries[x][y])+" "
+						#ASSIGN TO THE CORRECT VARIABLE
+						if x == 0:
+							itemaddition += newaddition
+						else:
+							menuaddition += newaddition
 				#NOW THAT'S DONE, CHECK EACH xADDITION - IF ITEM IS EMPTY, LET MENU TAKE PRIORITY AND DON'T ADD AN EXTRA DSMS CALL,
 				#OTHERWISE LET ITEM TAKE THIS ONE AND ADD A NEW -FMGMERGE RUN OF DSMS FOR THE MENU FMG DCX
 				if itemaddition != "" and menuaddition != "":
 					finalmsgbnd = itemaddition
 					additionaldsmscall = "\n"+dsmscall+menuaddition+"\n"
 				elif itemaddition != "":
-					pass
+					finalmsgbnd = itemaddition
+					additionaldsmscall = ""
 				else:
 					#IF ITEMADDITION IS EMPTY AND MENUADDITION ISN'T
 					finalmsgbnd = menuaddition
-	return finalmsgbnd
+	print_debug(modfolder+" "+finalmsgbnd)
+	return copycommands+finalmsgbnd
 
 func create_dsms_tae_entries(modfolder:String)->Dictionary:
 	#TAEs ARE ASSIGNED TO THE CORRECT axxx.anibnd.dcx VIA BAT VARIABLES, SO WE CREATE THOSE AND PREPARE
@@ -263,7 +292,9 @@ func sort_fmg_entries(modfolder:String)->Array:
 	var menumsg : Array = []
 	#MAKE SURE MSDMSQUEUE ACTUALLY HAS AN FMG ENTRY FOR THE MODFOLDER
 	if MHDSMSQueue.has(".fmg"):
+		print("Queue has FMG")
 		if MHDSMSQueue[".fmg"].has(modfolder):
+			print("Queue has modfolder "+modfolder)
 			var mffmgs : Array = MHDSMSQueue[".fmg"][modfolder]
 			for x in mffmgs.size():
 				var entry : String = mffmgs[x]
@@ -277,18 +308,26 @@ func sort_fmg_entries(modfolder:String)->Array:
 					#OTHERWISE PUT IT IN ITEMMSG
 					else:
 						itemmsg.append(entry)
+				else:
+					print_debug(entry+" is not a valid text file name!")
 	print_debug([itemmsg,menumsg])
 	return [itemmsg,menumsg]
 
 func get_output_mod_msgbnd_paths()->Array:
 	var basepath = get_mod_output_folder()
 	var itemmsg:String = ""
+	var itemcopy:String = ""
 	var menumsg:String = ""
-	if FileAccess.file_exists(basepath+"/msg/engus/item.msgbnd.dcx"):
-		itemmsg=basepath+"/msg/engus/item.msgbnd.dcx"
-	if FileAccess.file_exists(basepath+"/msg/engus/menu.msgbnd.dcx"):
-		menumsg=basepath+"/msg/engus/menu.msgbnd.dcx"
-	return [itemmsg,menumsg]
+	var menucopy:String = ""
+	#REMOVING THIS "IF DCX EXISTS" REQUIREMENT - IF DSMS CAN'T FIND IT IT'LL EITHER MAKE A NEW ONE FROM ER DIRECTLY
+	#OR JUST FAIL THIS PART OF THE BAT FILE, EITHER WAY IT SHOULDN'T BE FATAL
+	#if FileAccess.file_exists(basepath+"/msg/engus/item.msgbnd.dcx"):
+	itemmsg=basepath+"\\msg\\engus\\item.msgbnd.dcx"
+	itemcopy=basepath+"\\msg\\engus\\item.msgbnd - Copy.dcx"
+	#if FileAccess.file_exists(basepath+"/msg/engus/menu.msgbnd.dcx"):
+	menumsg=basepath+"\\msg\\engus\\menu.msgbnd.dcx"
+	menucopy=basepath+"\\msg\\engus\\menu.msgbnd - Copy.dcx"
+	return [itemmsg,menumsg,itemcopy,menucopy]
 
 func get_bat_name()->String:
 	var nametoreturn : String = ""
@@ -299,7 +338,7 @@ func get_bat_name()->String:
 func create_dsms_regbin_and_gametype_arguments()->String:
 	var argumentsarray : String = ""
 	#FIRST ADD REGULATION PATH BY GETTING MOD OUTPUT FOLDER AND ADDING "regulation.bin"
-	argumentsarray += add_quotes_around_string(get_mod_output_folder()+"/regulation.bin")+" "
+	argumentsarray += add_quotes_around_string(get_mod_output_folder()+"\\regulation.bin")+" "
 	#NOW ADD GAMETYPE COMMAND AND CURRENT GAME ID
 	argumentsarray += ("-G ")
 	argumentsarray += (get_gametype())
